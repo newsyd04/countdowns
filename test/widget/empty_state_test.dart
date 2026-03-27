@@ -47,7 +47,7 @@ void main() {
       );
 
       await tester.tap(find.text('Create Your First Countdown'));
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       expect(tapped, true);
     });

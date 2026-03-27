@@ -1,13 +1,15 @@
 {
   "permissions": {
     "allow": [
-      "Bash(flutter pub:*)",
-      "Bash(flutter run:*)",
-      "Bash(flutter analyze:*)",
-      "Bash(flutter build:*)",
-      "Bash(flutter doctor:*)",
-      "Bash(flutter create:*)",
-      "Bash(flutter test:*)"
+      "Bash(flutter:*)",
+      "Bash(gh:*)",
+      "Bash(mkdir:*)",
+      "Bash(dart:*)",
+      "Skill(permissions-analyzer)",
+      "Skill(permissions-analyzer:*)"
+    ],
+    "additionalDirectories": [
+      "/Users/daranewsome/.claude"
     ]
   }
 }

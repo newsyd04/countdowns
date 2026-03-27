@@ -10,6 +10,18 @@ class MockCountdownRepository extends Mock implements CountdownRepository {}
 void main() {
   late MockCountdownRepository mockRepository;
 
+  setUpAll(() {
+    registerFallbackValue(Countdown(
+      id: 'fallback',
+      title: 'Fallback',
+      targetDate: DateTime(2030),
+      emoji: '',
+      colorIndex: 0,
+      createdAt: DateTime(2030),
+      updatedAt: DateTime(2030),
+    ));
+  });
+
   setUp(() {
     mockRepository = MockCountdownRepository();
   });
