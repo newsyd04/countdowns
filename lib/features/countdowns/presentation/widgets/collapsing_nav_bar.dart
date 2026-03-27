@@ -6,20 +6,14 @@ import '../../../../core/theme/app_animations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/haptic_utils.dart';
 
-/// Apple-native collapsing navigation bar with glass-layer tuning.
+/// Apple-native collapsing navigation bar with unified background.
 ///
 /// Uses CupertinoSliverNavigationBar for layout safety during route
-/// transitions. Glass effect is achieved via the framework's internal
-/// BackdropFilter (activated when backgroundColor has alpha < 1.0).
+/// transitions. The header uses the same background color as the body
+/// at full opacity — no glass effect, no tint. This makes the header
+/// feel like a continuous part of the screen surface.
 ///
-/// Glass layering model:
-/// 1. Blur layer — handled by CupertinoSliverNavigationBar internally (~10 sigma)
-/// 2. Neutral tint overlay — backgroundColor with tuned alpha (0.78)
-/// 3. Depth separation — border set to empty (no harsh divider)
-/// 4. Foreground — title, gear icon, "+" icon
-///
-/// The neutral tint uses white (light mode) or near-black (dark mode)
-/// to prevent color bleed from bright countdown cards underneath.
+/// Separation is provided by a subtle 0.5px divider at 6% opacity.
 class CollapsingNavBarSliver extends StatelessWidget {
   final String title;
   final VoidCallback onAddPressed;
@@ -36,14 +30,12 @@ class CollapsingNavBarSliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ─── Glass Tint Layer ──────────────────────────────────────
-    // Use a neutral color (white/near-black) instead of the page
-    // background to prevent card color contamination.
-    // Opacity 0.78 = translucent enough to feel glassy,
-    // opaque enough to neutralize bright colors underneath.
-    final glassTint = isDark
-        ? const Color(0xFF1C1C1E).withValues(alpha: 0.78)
-        : const Color(0xFFF9F9F9).withValues(alpha: 0.78);
+    // ─── Header Background ─────────────────────────────────────
+    // Same background as body — no glass effect, no tint.
+    // The header is a continuous part of the screen surface.
+    final headerBg = isDark
+        ? AppColors.backgroundPrimaryDark
+        : AppColors.backgroundPrimary;
 
     return CupertinoSliverNavigationBar(
       largeTitle: Text(title),
@@ -65,8 +57,14 @@ class CollapsingNavBarSliver extends StatelessWidget {
           ),
         ],
       ),
-      backgroundColor: glassTint,
-      border: const Border(), // No divider — glass separation is sufficient
+      backgroundColor: headerBg,
+      border: Border(
+        bottom: BorderSide(
+          color: (isDark ? const Color(0xFF545458) : const Color(0xFF3C3C43))
+              .withValues(alpha: 0.06),
+          width: 0.5,
+        ),
+      ),
       stretch: true,
     );
   }

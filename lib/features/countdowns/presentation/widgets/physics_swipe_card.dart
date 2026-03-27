@@ -94,7 +94,7 @@ class _PhysicsSwipeCardState extends State<PhysicsSwipeCard>
     if (!_isDragging) return;
 
     final rawDelta = details.localPosition.dx - _dragStartX;
-    var targetOffset = _currentOffset + rawDelta - (_currentOffset);
+    var targetOffset = _currentOffset + rawDelta;
 
     // Apply deadzone
     if (targetOffset.abs() < _deadzone) {

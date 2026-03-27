@@ -7,6 +7,7 @@ import '../../domain/repositories/countdown_repository.dart';
 import '../../domain/usecases/countdown_usecases.dart';
 import '../../../../core/utils/date_utils.dart';
 import '../../services/notification_service.dart';
+import '../../../settings/settings_provider.dart';
 import 'countdown_state.dart';
 
 // ─── Data Source & Repository ───────────────────────────────
@@ -55,6 +56,7 @@ final suggestDateUseCaseProvider = Provider<SuggestDateUseCase>((ref) {
 
 final countdownsProvider =
     StateNotifierProvider<CountdownsNotifier, CountdownsState>((ref) {
+  final prefs = ref.watch(preferencesProvider);
   return CountdownsNotifier(
     getCountdowns: ref.watch(getCountdownsUseCaseProvider),
     createCountdown: ref.watch(createCountdownUseCaseProvider),
@@ -62,6 +64,7 @@ final countdownsProvider =
     deleteCountdown: ref.watch(deleteCountdownUseCaseProvider),
     reorderCountdowns: ref.watch(reorderCountdownsUseCaseProvider),
     notificationService: NotificationService(),
+    globalNotificationsEnabled: prefs.notificationsEnabled,
   );
 });
 
@@ -72,6 +75,7 @@ class CountdownsNotifier extends StateNotifier<CountdownsState> {
   final DeleteCountdownUseCase _deleteCountdown;
   final ReorderCountdownsUseCase _reorderCountdowns;
   final NotificationService _notificationService;
+  final bool _globalNotificationsEnabled;
 
   Countdown? _lastDeleted;
 
@@ -82,12 +86,14 @@ class CountdownsNotifier extends StateNotifier<CountdownsState> {
     required DeleteCountdownUseCase deleteCountdown,
     required ReorderCountdownsUseCase reorderCountdowns,
     required NotificationService notificationService,
+    required bool globalNotificationsEnabled,
   })  : _getCountdowns = getCountdowns,
         _createCountdown = createCountdown,
         _updateCountdown = updateCountdown,
         _deleteCountdown = deleteCountdown,
         _reorderCountdowns = reorderCountdowns,
         _notificationService = notificationService,
+        _globalNotificationsEnabled = globalNotificationsEnabled,
         super(const CountdownsState.loading()) {
     loadCountdowns();
   }
@@ -125,7 +131,11 @@ class CountdownsNotifier extends StateNotifier<CountdownsState> {
       );
 
       // Schedule notifications for the new countdown
-      await _notificationService.scheduleForCountdown(countdown);
+      if (_globalNotificationsEnabled) {
+        await _notificationService.scheduleForCountdown(countdown);
+      } else {
+        await _notificationService.cancelForCountdown(countdown.id);
+      }
 
       await loadCountdowns();
       return countdown;
@@ -141,7 +151,11 @@ class CountdownsNotifier extends StateNotifier<CountdownsState> {
       await _updateCountdown(countdown);
 
       // Reschedule notifications (cancels old, schedules new)
-      await _notificationService.scheduleForCountdown(countdown);
+      if (_globalNotificationsEnabled) {
+        await _notificationService.scheduleForCountdown(countdown);
+      } else {
+        await _notificationService.cancelForCountdown(countdown.id);
+      }
 
       await loadCountdowns();
     } catch (e) {
@@ -186,7 +200,11 @@ class CountdownsNotifier extends StateNotifier<CountdownsState> {
       );
 
       // Reschedule notifications for the restored countdown
-      await _notificationService.scheduleForCountdown(restored);
+      if (_globalNotificationsEnabled) {
+        await _notificationService.scheduleForCountdown(restored);
+      } else {
+        await _notificationService.cancelForCountdown(restored.id);
+      }
 
       _lastDeleted = null;
       await loadCountdowns();

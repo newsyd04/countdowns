@@ -6,6 +6,7 @@ import 'package:hive_ce_flutter/hive_flutter.dart';
 
 import 'core/constants/app_constants.dart';
 import 'core/theme/app_theme.dart';
+import 'core/utils/haptic_utils.dart';
 import 'features/countdowns/data/datasources/countdown_local_datasource.dart';
 import 'features/countdowns/presentation/pages/home_page.dart';
 import 'features/countdowns/presentation/providers/countdown_providers.dart';
@@ -57,11 +58,16 @@ Future<void> main() async {
 }
 
 /// Root application widget.
-class CountdownsApp extends StatelessWidget {
+/// Watches preferences to sync haptics enabled state globally.
+class CountdownsApp extends ConsumerWidget {
   const CountdownsApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Sync haptics preference to the static utility
+    final prefs = ref.watch(preferencesProvider);
+    AppHaptics.setEnabled(prefs.hapticsEnabled);
+
     return MaterialApp(
       title: 'Countdowns',
       debugShowCheckedModeBanner: false,

@@ -217,42 +217,32 @@ Fully custom physics-based swipe system replacing `flutter_slidable`.
 
 ## Navigation Pattern
 
-### Collapsing Glass Navigation Bar
+### Collapsing Navigation Bar
 
-Uses `CupertinoSliverNavigationBar` for layout safety during route transitions. Glass effect is achieved via the framework's internal `BackdropFilter` (activated when `backgroundColor` has alpha < 1.0).
+Uses `CupertinoSliverNavigationBar` for layout safety during route transitions.
 
-#### Glass Header Calibration
+#### Header Background Strategy
 
-##### Layer Stack
+The header uses the **same background color** as the body (`backgroundPrimary` / `backgroundPrimaryDark`) at full opacity. There is no glass/blur effect — the header feels like a continuous part of the screen surface.
 
-| Layer | Type | Value |
-|-------|------|-------|
-| 1. Blur | Backdrop blur (framework) | ~10 sigma (CupertinoSliverNavigationBar internal) |
-| 2. Neutral tint | Background color overlay | `#F9F9F9` at 78% opacity (light) / `#1C1C1E` at 78% (dark) |
-| 3. Depth | No divider, no shadow | `border: Border()` (empty) |
-| 4. Content | Title + icons | Standard Cupertino chrome |
+#### Rationale
+- Countdown cards provide the visual energy — the header should be quiet
+- Glass tinting created visible color mismatch between header and body
+- A unified background makes the screen feel like one continuous canvas
 
-##### Color Bleed Control
+#### Separation Treatment
+- **Divider**: 0.5px line at 6% opacity black — barely perceptible, structural only
+- **No blur**: Not needed when header matches body
+- **No shadow**: Divider is sufficient
 
-- Tint color is neutral near-white (#F9F9F9), NOT page background (#F2F2F7)
-- 78% opacity neutralizes bright card colors while preserving translucency
-- Pure white (#FFFFFF) rejected: too harsh against page background
-- Page background (#F2F2F7) rejected: warm tone amplifies card color bleed
+#### Expanded State
+- Header is visually identical to body background
+- No visible color block behind title
 
-##### Scroll Interpolation
-
-Handled natively by CupertinoSliverNavigationBar:
-- progress 0.0: Large title, no blur, solid background
-- progress 0.5: Mid-transition, blur activating
-- progress 1.0: Compact title, full blur, 78% tint overlay
-
-##### Validation
-
-- Green card underneath → header stays neutral ✓
-- Red/pink card underneath → header stays neutral ✓
-- Yellow card underneath → header stays neutral ✓
-- Header still feels translucent (content shapes softly visible) ✓
-- Header never appears as solid block ✓
+#### Collapsed State
+- Same background as body (fully opaque)
+- Subtle 0.5px divider provides minimal structure
+- Title and icons remain readable
 
 ##### Compact Title
 
