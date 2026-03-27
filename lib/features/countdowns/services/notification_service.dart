@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -6,11 +7,9 @@ import '../domain/entities/countdown.dart';
 
 /// Handles local notification scheduling for countdowns.
 ///
-/// Features:
-/// - Timezone-safe scheduling
-/// - Multiple notification offsets (day before, day of, etc.)
-/// - Automatic rescheduling for recurring events
-/// - Permission handling
+/// All methods are safe to call — errors are caught and logged
+/// rather than crashing the app. On platforms where notifications
+/// aren't supported (web), methods are no-ops.
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
   factory NotificationService() => _instance;
@@ -22,50 +21,62 @@ class NotificationService {
   bool _isInitialized = false;
 
   /// Initialize the notification plugin.
+  /// Safe to call on any platform — fails gracefully on web.
   Future<void> init() async {
     if (_isInitialized) return;
 
-    tz.initializeTimeZones();
+    try {
+      tz.initializeTimeZones();
 
-    const androidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-    const iosSettings = DarwinInitializationSettings(
-      requestAlertPermission: false,
-      requestBadgePermission: false,
-      requestSoundPermission: false,
-    );
+      const androidSettings =
+          AndroidInitializationSettings('@mipmap/ic_launcher');
+      const iosSettings = DarwinInitializationSettings(
+        requestAlertPermission: false,
+        requestBadgePermission: false,
+        requestSoundPermission: false,
+      );
 
-    const settings = InitializationSettings(
-      android: androidSettings,
-      iOS: iosSettings,
-    );
+      const settings = InitializationSettings(
+        android: androidSettings,
+        iOS: iosSettings,
+      );
 
-    await _plugin.initialize(
-      settings,
-      onDidReceiveNotificationResponse: _onNotificationTap,
-    );
+      await _plugin.initialize(
+        settings,
+        onDidReceiveNotificationResponse: _onNotificationTap,
+      );
 
-    _isInitialized = true;
+      _isInitialized = true;
+    } catch (e) {
+      debugPrint('NotificationService init failed: $e');
+      // Don't crash the app — notifications just won't work
+    }
   }
 
-  /// Request notification permissions (call when user enables notifications).
+  /// Request notification permissions.
   Future<bool> requestPermissions() async {
-    final ios = _plugin.resolvePlatformSpecificImplementation<
-        IOSFlutterLocalNotificationsPlugin>();
-    if (ios != null) {
-      final granted = await ios.requestPermissions(
-        alert: true,
-        badge: true,
-        sound: true,
-      );
-      return granted ?? false;
-    }
+    if (!_isInitialized) return false;
 
-    final android = _plugin.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
-    if (android != null) {
-      final granted = await android.requestNotificationsPermission();
-      return granted ?? false;
+    try {
+      final ios = _plugin.resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin>();
+      if (ios != null) {
+        final granted = await ios.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+        return granted ?? false;
+      }
+
+      final android = _plugin.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>();
+      if (android != null) {
+        final granted = await android.requestNotificationsPermission();
+        return granted ?? false;
+      }
+    } catch (e) {
+      debugPrint('NotificationService requestPermissions failed: $e');
     }
 
     return false;
@@ -73,66 +84,80 @@ class NotificationService {
 
   /// Schedule notifications for a countdown based on its offsets.
   Future<void> scheduleForCountdown(Countdown countdown) async {
-    if (!countdown.notificationsEnabled) return;
+    if (!_isInitialized || !countdown.notificationsEnabled) return;
 
-    // Cancel existing notifications for this countdown
-    await cancelForCountdown(countdown.id);
+    try {
+      // Cancel existing notifications for this countdown
+      await cancelForCountdown(countdown.id);
 
-    final targetDate = countdown.effectiveDate;
+      final targetDate = countdown.effectiveDate;
 
-    for (int i = 0; i < countdown.notificationOffsets.length; i++) {
-      final offsetMinutes = countdown.notificationOffsets[i];
-      final scheduledDate =
-          targetDate.subtract(Duration(minutes: offsetMinutes));
+      for (int i = 0; i < countdown.notificationOffsets.length; i++) {
+        final offsetMinutes = countdown.notificationOffsets[i];
+        final scheduledDate =
+            targetDate.subtract(Duration(minutes: offsetMinutes));
 
-      // Skip if scheduled date is in the past
-      if (scheduledDate.isBefore(DateTime.now())) continue;
+        // Skip if scheduled date is in the past
+        if (scheduledDate.isBefore(DateTime.now())) continue;
 
-      final notificationId = _generateId(countdown.id, i);
-      final title = _notificationTitle(countdown, offsetMinutes);
-      final body = _notificationBody(countdown, offsetMinutes);
+        final notificationId = _generateId(countdown.id, i);
+        final title = _notificationTitle(countdown, offsetMinutes);
+        final body = _notificationBody(countdown, offsetMinutes);
 
-      await _plugin.zonedSchedule(
-        notificationId,
-        title,
-        body,
-        tz.TZDateTime.from(scheduledDate, tz.local),
-        NotificationDetails(
-          iOS: DarwinNotificationDetails(
-            presentAlert: true,
-            presentBadge: true,
-            presentSound: true,
-            threadIdentifier: 'countdowns',
+        await _plugin.zonedSchedule(
+          notificationId,
+          title,
+          body,
+          tz.TZDateTime.from(scheduledDate, tz.local),
+          NotificationDetails(
+            iOS: DarwinNotificationDetails(
+              presentAlert: true,
+              presentBadge: true,
+              presentSound: true,
+              threadIdentifier: 'countdowns',
+            ),
+            android: AndroidNotificationDetails(
+              'countdowns_channel',
+              'Countdowns',
+              channelDescription: 'Countdown event notifications',
+              importance: Importance.high,
+              priority: Priority.high,
+            ),
           ),
-          android: AndroidNotificationDetails(
-            'countdowns_channel',
-            'Countdowns',
-            channelDescription: 'Countdown event notifications',
-            importance: Importance.high,
-            priority: Priority.high,
-          ),
-        ),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-      );
+          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime,
+        );
+      }
+    } catch (e) {
+      debugPrint('NotificationService scheduleForCountdown failed: $e');
     }
   }
 
   /// Cancel all notifications for a specific countdown.
   Future<void> cancelForCountdown(String countdownId) async {
-    // Cancel up to 10 possible notification offsets per countdown
-    for (int i = 0; i < 10; i++) {
-      await _plugin.cancel(_generateId(countdownId, i));
+    if (!_isInitialized) return;
+
+    try {
+      for (int i = 0; i < 10; i++) {
+        await _plugin.cancel(_generateId(countdownId, i));
+      }
+    } catch (e) {
+      debugPrint('NotificationService cancelForCountdown failed: $e');
     }
   }
 
   /// Cancel all scheduled notifications.
   Future<void> cancelAll() async {
-    await _plugin.cancelAll();
+    if (!_isInitialized) return;
+
+    try {
+      await _plugin.cancelAll();
+    } catch (e) {
+      debugPrint('NotificationService cancelAll failed: $e');
+    }
   }
 
-  /// Generate a stable notification ID from countdown ID and offset index.
   int _generateId(String countdownId, int offsetIndex) {
     return countdownId.hashCode + offsetIndex;
   }
@@ -160,6 +185,5 @@ class NotificationService {
 
   void _onNotificationTap(NotificationResponse response) {
     // Navigate to the specific countdown when tapped
-    // This would integrate with go_router for deep linking
   }
 }
