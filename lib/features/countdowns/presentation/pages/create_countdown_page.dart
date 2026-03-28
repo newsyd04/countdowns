@@ -58,7 +58,8 @@ class _CreateCountdownPageState extends ConsumerState<CreateCountdownPage>
 
     final existing = widget.existingCountdown;
     _titleController = TextEditingController(text: existing?.title ?? '');
-    _selectedDate = existing?.targetDate ?? DateTime.now().add(const Duration(days: 7));
+    _selectedDate =
+        existing?.targetDate ?? DateTime.now().add(const Duration(days: 7));
     _selectedEmoji = existing?.emoji ?? AppConstants.defaultEmoji;
     _selectedColorIndex = existing?.colorIndex ?? 0;
     _selectedRecurrence = existing?.recurrence ?? RecurrenceType.none;
@@ -302,8 +303,7 @@ class _CreateCountdownPageState extends ConsumerState<CreateCountdownPage>
                           color: isDark
                               ? AppColors.surfaceSecondaryDark
                               : AppColors.surfaceSecondary,
-                          borderRadius:
-                              BorderRadius.circular(AppSpacing.xxl),
+                          borderRadius: BorderRadius.circular(AppSpacing.xxl),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.06),
@@ -575,11 +575,9 @@ class _CreateCountdownPageState extends ConsumerState<CreateCountdownPage>
                 Text(
                   type.displayName,
                   style: TextStyle(
-                    fontWeight:
-                        isSelected ? FontWeight.w600 : FontWeight.w400,
-                    color: isSelected
-                        ? AppColors.accent
-                        : CupertinoColors.label,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                    color:
+                        isSelected ? AppColors.accent : CupertinoColors.label,
                   ),
                 ),
                 if (isSelected) ...[

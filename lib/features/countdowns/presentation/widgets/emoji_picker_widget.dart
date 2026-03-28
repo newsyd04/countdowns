@@ -28,7 +28,8 @@ class EmojiPickerWidget extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? AppColors.surfaceElevatedDark : AppColors.surfaceElevated,
+        color:
+            isDark ? AppColors.surfaceElevatedDark : AppColors.surfaceElevated,
         borderRadius: const BorderRadius.vertical(
           top: Radius.circular(AppSpacing.modalRadius),
         ),
@@ -52,9 +53,8 @@ class EmojiPickerWidget extends StatelessWidget {
           Text(
             'Choose an Icon',
             style: AppTypography.headline.copyWith(
-              color: isDark
-                  ? AppColors.labelPrimaryDark
-                  : AppColors.labelPrimary,
+              color:
+                  isDark ? AppColors.labelPrimaryDark : AppColors.labelPrimary,
             ),
           ),
           const SizedBox(height: AppSpacing.xl),

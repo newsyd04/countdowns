@@ -97,7 +97,8 @@ class _CountdownCardState extends State<CountdownCard>
     final dv = widget.displayValues;
     final isToday = dv?.isToday ?? countdown.isToday;
     final daysRemaining = dv?.daysRemaining ?? countdown.daysRemaining;
-    final formattedCountdown = dv?.formattedCountdown ?? countdown.formattedCountdown;
+    final formattedCountdown =
+        dv?.formattedCountdown ?? countdown.formattedCountdown;
     final effectiveDate = dv?.effectiveDate ?? countdown.effectiveDate;
 
     final cardContent = GestureDetector(
@@ -204,7 +205,9 @@ class _CountdownCardState extends State<CountdownCard>
                         // Days remaining
                         Padding(
                           padding: EdgeInsets.only(
-                            top: countdown.recurrence != RecurrenceType.none ? 20 : 0,
+                            top: countdown.recurrence != RecurrenceType.none
+                                ? 20
+                                : 0,
                           ),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,

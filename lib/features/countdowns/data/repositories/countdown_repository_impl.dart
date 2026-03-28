@@ -30,18 +30,14 @@ class CountdownRepositoryImpl implements CountdownRepository {
   @override
   Future<List<Countdown>> getUpcoming() async {
     final all = await getAll();
-    return all
-        .where((c) => !c.isPast)
-        .toList()
+    return all.where((c) => !c.isPast).toList()
       ..sort((a, b) => a.effectiveDate.compareTo(b.effectiveDate));
   }
 
   @override
   Future<List<Countdown>> getPast() async {
     final all = await getAll();
-    return all
-        .where((c) => c.isPast)
-        .toList()
+    return all.where((c) => c.isPast).toList()
       ..sort((a, b) => b.targetDate.compareTo(a.targetDate));
   }
 

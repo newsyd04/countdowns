@@ -68,9 +68,11 @@ class CountdownsApp extends ConsumerWidget {
     AppHaptics.setEnabled(prefs.hapticsEnabled);
 
     final themeModeStr = prefs.themeMode;
-    final themeMode = themeModeStr == 'light' ? ThemeMode.light
-        : themeModeStr == 'dark' ? ThemeMode.dark
-        : ThemeMode.system;
+    final themeMode = themeModeStr == 'light'
+        ? ThemeMode.light
+        : themeModeStr == 'dark'
+            ? ThemeMode.dark
+            : ThemeMode.system;
 
     return MaterialApp(
       title: 'Countdowns',

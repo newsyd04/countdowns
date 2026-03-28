@@ -35,7 +35,8 @@ class PhysicsSwipeCard extends StatefulWidget {
     this.onEdit,
     this.onDelete,
     this.actionExtent = 80,
-    this.borderRadius = const BorderRadius.all(Radius.circular(AppSpacing.cardRadius)),
+    this.borderRadius =
+        const BorderRadius.all(Radius.circular(AppSpacing.cardRadius)),
   });
 
   @override
@@ -106,7 +107,8 @@ class _PhysicsSwipeCardState extends State<PhysicsSwipeCard>
     _controller.value = targetOffset;
 
     // Haptic feedback when crossing action threshold
-    if (!_hasTriggeredHaptic && targetOffset.abs() > widget.actionExtent * _snapThreshold) {
+    if (!_hasTriggeredHaptic &&
+        targetOffset.abs() > widget.actionExtent * _snapThreshold) {
       AppHaptics.selection();
       _hasTriggeredHaptic = true;
     }
@@ -149,7 +151,8 @@ class _PhysicsSwipeCardState extends State<PhysicsSwipeCard>
     // Beyond action extent: elastic resistance
     final excess = offset.abs() - widget.actionExtent;
     final dampedExcess = excess * _elasticFactor;
-    return offset.sign * (widget.actionExtent + dampedExcess).clamp(0, maxExtent);
+    return offset.sign *
+        (widget.actionExtent + dampedExcess).clamp(0, maxExtent);
   }
 
   void _animateTo(double target, [double velocity = 0]) {
@@ -180,12 +183,10 @@ class _PhysicsSwipeCardState extends State<PhysicsSwipeCard>
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     // Action reveal progress (0→1)
-    final deleteProgress = offset < 0
-        ? (offset.abs() / widget.actionExtent).clamp(0.0, 1.0)
-        : 0.0;
-    final editProgress = offset > 0
-        ? (offset / widget.actionExtent).clamp(0.0, 1.0)
-        : 0.0;
+    final deleteProgress =
+        offset < 0 ? (offset.abs() / widget.actionExtent).clamp(0.0, 1.0) : 0.0;
+    final editProgress =
+        offset > 0 ? (offset / widget.actionExtent).clamp(0.0, 1.0) : 0.0;
 
     return ClipRRect(
       borderRadius: widget.borderRadius,
@@ -208,7 +209,8 @@ class _PhysicsSwipeCardState extends State<PhysicsSwipeCard>
                     child: const Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(CupertinoIcons.trash, color: Colors.white, size: 22),
+                        Icon(CupertinoIcons.trash,
+                            color: Colors.white, size: 22),
                         SizedBox(height: 4),
                         Text(
                           'Delete',
@@ -241,7 +243,8 @@ class _PhysicsSwipeCardState extends State<PhysicsSwipeCard>
                     child: const Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(CupertinoIcons.pencil, color: Colors.white, size: 22),
+                        Icon(CupertinoIcons.pencil,
+                            color: Colors.white, size: 22),
                         SizedBox(height: 4),
                         Text(
                           'Edit',

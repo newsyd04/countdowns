@@ -33,9 +33,8 @@ class CollapsingNavBarSliver extends StatelessWidget {
     // ─── Header Background ─────────────────────────────────────
     // Same background as body — no glass effect, no tint.
     // The header is a continuous part of the screen surface.
-    final headerBg = isDark
-        ? AppColors.backgroundPrimaryDark
-        : AppColors.backgroundPrimary;
+    final headerBg =
+        isDark ? AppColors.backgroundPrimaryDark : AppColors.backgroundPrimary;
 
     return CupertinoSliverNavigationBar(
       largeTitle: Text(title),
@@ -113,7 +112,8 @@ class _NavBarButtonState extends State<_NavBarButton>
 
   void _animatePress() {
     _scaleController.animateWith(
-      SpringSimulation(AppAnimations.tapSpring, _scaleController.value, 0.96, 0),
+      SpringSimulation(
+          AppAnimations.tapSpring, _scaleController.value, 0.96, 0),
     );
   }
 
@@ -126,9 +126,7 @@ class _NavBarButtonState extends State<_NavBarButton>
   @override
   Widget build(BuildContext context) {
     // Use system blue — matches native iOS nav bar button color
-    final iconColor = widget.isDark
-        ? AppColors.accentDark
-        : AppColors.accent;
+    final iconColor = widget.isDark ? AppColors.accentDark : AppColors.accent;
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,

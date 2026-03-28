@@ -45,7 +45,8 @@ class ParallaxCardWrapper extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08 + 0.12 * proximity),
+                  color:
+                      Colors.black.withValues(alpha: 0.08 + 0.12 * proximity),
                   blurRadius: elevation * 2,
                   offset: Offset(0, elevation * 0.5),
                   spreadRadius: -2,

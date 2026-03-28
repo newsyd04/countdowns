@@ -37,8 +37,7 @@ void main() {
       });
 
       test('returns "Yesterday" for yesterday', () {
-        final yesterday =
-            DateTime.now().subtract(const Duration(days: 1));
+        final yesterday = DateTime.now().subtract(const Duration(days: 1));
         expect(CountdownDateUtils.formatCountdown(yesterday), 'Yesterday');
       });
 
@@ -63,8 +62,7 @@ void main() {
       });
 
       test('handles past dates with "ago" suffix', () {
-        final fiveDaysAgo =
-            DateTime.now().subtract(const Duration(days: 5));
+        final fiveDaysAgo = DateTime.now().subtract(const Duration(days: 5));
         expect(
           CountdownDateUtils.formatCountdown(fiveDaysAgo),
           '5 days ago',

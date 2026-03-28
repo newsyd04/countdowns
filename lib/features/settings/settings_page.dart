@@ -35,21 +35,16 @@ class SettingsPage extends ConsumerWidget {
     final prefs = ref.watch(preferencesProvider);
     final isDark = context.isDark;
 
-    final bgColor = isDark
-        ? AppColors.backgroundPrimaryDark
-        : AppColors.backgroundPrimary;
-    final surfaceColor = isDark
-        ? AppColors.surfacePrimaryDark
-        : AppColors.surfacePrimary;
-    final labelColor = isDark
-        ? AppColors.labelPrimaryDark
-        : AppColors.labelPrimary;
-    final secondaryColor = isDark
-        ? AppColors.labelSecondaryDark
-        : AppColors.labelSecondary;
-    final separatorColor = isDark
-        ? AppColors.separatorDark
-        : AppColors.separator;
+    final bgColor =
+        isDark ? AppColors.backgroundPrimaryDark : AppColors.backgroundPrimary;
+    final surfaceColor =
+        isDark ? AppColors.surfacePrimaryDark : AppColors.surfacePrimary;
+    final labelColor =
+        isDark ? AppColors.labelPrimaryDark : AppColors.labelPrimary;
+    final secondaryColor =
+        isDark ? AppColors.labelSecondaryDark : AppColors.labelSecondary;
+    final separatorColor =
+        isDark ? AppColors.separatorDark : AppColors.separator;
 
     return CupertinoPageScaffold(
       backgroundColor: bgColor,
@@ -68,109 +63,113 @@ class SettingsPage extends ConsumerWidget {
         child: Material(
           color: Colors.transparent,
           child: ListView(
-          physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics(),
-          ),
-          padding: const EdgeInsets.only(
-            left: _screenHPadding,
-            right: _screenHPadding,
-            top: _sm, // 16pt below nav bar
-          ),
-          children: [
-            // ─── Preferences ────────────────────────────────────
-            const SizedBox(height: _md), // 24pt before first header
-            _buildSectionHeader('PREFERENCES', secondaryColor),
-            const SizedBox(height: _xs), // 8pt header → group
-            _buildGroup(
-              surfaceColor: surfaceColor,
-              children: [
-                _buildNavigationRow(
-                  icon: CupertinoIcons.moon_stars,
-                  iconColor: AppColors.accent,
-                  label: 'Appearance',
-                  value: _themeModeLabel(prefs.themeMode),
-                  labelColor: labelColor,
-                  valueColor: secondaryColor,
-                  onTap: () => _showThemePicker(context, ref),
-                ),
-                _buildSeparator(separatorColor),
-                _buildToggleRow(
-                  icon: CupertinoIcons.hand_draw,
-                  iconColor: AppColors.accent,
-                  label: 'Haptic Feedback',
-                  labelColor: labelColor,
-                  value: prefs.hapticsEnabled,
-                  onChanged: (v) {
-                    ref.read(preferencesProvider.notifier).setHapticsEnabled(v);
-                  },
-                ),
-                _buildSeparator(separatorColor),
-                _buildToggleRow(
-                  icon: CupertinoIcons.bell,
-                  iconColor: const Color(0xFFFF3B30),
-                  label: 'Notifications',
-                  labelColor: labelColor,
-                  value: prefs.notificationsEnabled,
-                  onChanged: (v) {
-                    ref.read(preferencesProvider.notifier).setNotificationsEnabled(v);
-                  },
-                ),
-              ],
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
             ),
-
-            // ─── About ──────────────────────────────────────────
-            const SizedBox(height: _md), // 24pt between groups
-            _buildSectionHeader('ABOUT', secondaryColor),
-            const SizedBox(height: _xs), // 8pt header → group
-            _buildGroup(
-              surfaceColor: surfaceColor,
-              children: [
-                _buildInfoRow(
-                  label: 'App Name',
-                  value: 'Countdowns',
-                  labelColor: labelColor,
-                  valueColor: secondaryColor,
-                ),
-                _buildSeparator(separatorColor),
-                _buildInfoRow(
-                  label: 'Version',
-                  value: '1.0.0',
-                  labelColor: labelColor,
-                  valueColor: secondaryColor,
-                ),
-              ],
+            padding: const EdgeInsets.only(
+              left: _screenHPadding,
+              right: _screenHPadding,
+              top: _sm, // 16pt below nav bar
             ),
-
-            // ─── Footer ─────────────────────────────────────────
-            const SizedBox(height: _lg), // 32pt before footer
-            Center(
-              child: Column(
+            children: [
+              // ─── Preferences ────────────────────────────────────
+              const SizedBox(height: _md), // 24pt before first header
+              _buildSectionHeader('PREFERENCES', secondaryColor),
+              const SizedBox(height: _xs), // 8pt header → group
+              _buildGroup(
+                surfaceColor: surfaceColor,
                 children: [
-                  Text(
-                    'Version 1.0',
-                    style: TextStyle(
-                      fontFamily: '.SF Pro Display',
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                      color: secondaryColor.withValues(alpha: 0.45),
-                    ),
+                  _buildNavigationRow(
+                    icon: CupertinoIcons.moon_stars,
+                    iconColor: AppColors.accent,
+                    label: 'Appearance',
+                    value: _themeModeLabel(prefs.themeMode),
+                    labelColor: labelColor,
+                    valueColor: secondaryColor,
+                    onTap: () => _showThemePicker(context, ref),
                   ),
-                  const SizedBox(height: _xs),
-                  Text(
-                    'Dara Newsome',
-                    style: TextStyle(
-                      fontFamily: '.SF Pro Display',
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                      color: secondaryColor.withValues(alpha: 0.5),
-                    ),
+                  _buildSeparator(separatorColor),
+                  _buildToggleRow(
+                    icon: CupertinoIcons.hand_draw,
+                    iconColor: AppColors.accent,
+                    label: 'Haptic Feedback',
+                    labelColor: labelColor,
+                    value: prefs.hapticsEnabled,
+                    onChanged: (v) {
+                      ref
+                          .read(preferencesProvider.notifier)
+                          .setHapticsEnabled(v);
+                    },
+                  ),
+                  _buildSeparator(separatorColor),
+                  _buildToggleRow(
+                    icon: CupertinoIcons.bell,
+                    iconColor: const Color(0xFFFF3B30),
+                    label: 'Notifications',
+                    labelColor: labelColor,
+                    value: prefs.notificationsEnabled,
+                    onChanged: (v) {
+                      ref
+                          .read(preferencesProvider.notifier)
+                          .setNotificationsEnabled(v);
+                    },
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: _md),
-          ],
-        ),
+
+              // ─── About ──────────────────────────────────────────
+              const SizedBox(height: _md), // 24pt between groups
+              _buildSectionHeader('ABOUT', secondaryColor),
+              const SizedBox(height: _xs), // 8pt header → group
+              _buildGroup(
+                surfaceColor: surfaceColor,
+                children: [
+                  _buildInfoRow(
+                    label: 'App Name',
+                    value: 'Countdowns',
+                    labelColor: labelColor,
+                    valueColor: secondaryColor,
+                  ),
+                  _buildSeparator(separatorColor),
+                  _buildInfoRow(
+                    label: 'Version',
+                    value: '1.0.0',
+                    labelColor: labelColor,
+                    valueColor: secondaryColor,
+                  ),
+                ],
+              ),
+
+              // ─── Footer ─────────────────────────────────────────
+              const SizedBox(height: _lg), // 32pt before footer
+              Center(
+                child: Column(
+                  children: [
+                    Text(
+                      'Version 1.0',
+                      style: TextStyle(
+                        fontFamily: '.SF Pro Display',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                        color: secondaryColor.withValues(alpha: 0.45),
+                      ),
+                    ),
+                    const SizedBox(height: _xs),
+                    Text(
+                      'Dara Newsome',
+                      style: TextStyle(
+                        fontFamily: '.SF Pro Display',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                        color: secondaryColor.withValues(alpha: 0.5),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: _md),
+            ],
+          ),
         ),
       ),
     );

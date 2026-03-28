@@ -7,11 +7,13 @@
       "Bash(dart:*)",
       "Skill(permissions-analyzer)",
       "Skill(permissions-analyzer:*)",
-      "Read(//Users/daranewsome/Downloads/**)"
+      "Read(//Users/daranewsome/Downloads/**)",
+      "Read(//Users/daranewsome/repos/**)"
     ],
     "additionalDirectories": [
       "/Users/daranewsome/.claude",
-      "/Users/daranewsome/Downloads"
+      "/Users/daranewsome/Downloads",
+      "/Users/daranewsome/repos/DaraNewsome-Portfolio/public"
     ]
   }
 }

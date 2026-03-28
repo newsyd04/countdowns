@@ -167,13 +167,15 @@ class AppColors {
     );
   }
 
-  static Color _shiftColor(Color color, double hueShift, double brightnessShift) {
+  static Color _shiftColor(
+      Color color, double hueShift, double brightnessShift) {
     final hsl = HSLColor.fromColor(color);
     final newHue = (hsl.hue + hueShift) % 360;
     final newLightness = (hsl.lightness + brightnessShift).clamp(0.25, 0.75);
     // Preserve saturation — never desaturate below 0.5
     final newSaturation = hsl.saturation.clamp(0.5, 1.0);
-    return HSLColor.fromAHSL(1.0, newHue, newSaturation, newLightness).toColor();
+    return HSLColor.fromAHSL(1.0, newHue, newSaturation, newLightness)
+        .toColor();
   }
 }
 

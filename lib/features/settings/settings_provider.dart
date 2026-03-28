@@ -51,8 +51,7 @@ class PreferencesNotifier extends StateNotifier<AppPreferences> {
               _box.get('hapticsEnabled', defaultValue: true) as bool,
           notificationsEnabled:
               _box.get('notificationsEnabled', defaultValue: true) as bool,
-          themeMode:
-              _box.get('themeMode', defaultValue: 'system') as String,
+          themeMode: _box.get('themeMode', defaultValue: 'system') as String,
         ));
 
   void setHapticsEnabled(bool value) {

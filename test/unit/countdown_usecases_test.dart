@@ -100,8 +100,7 @@ void main() {
 
   group('CreateCountdownUseCase', () {
     test('creates countdown with correct defaults', () async {
-      when(() => mockRepository.create(any()))
-          .thenAnswer((invocation) async {
+      when(() => mockRepository.create(any())).thenAnswer((invocation) async {
         return invocation.positionalArguments[0] as Countdown;
       });
 

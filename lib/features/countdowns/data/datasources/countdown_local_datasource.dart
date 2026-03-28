@@ -11,8 +11,7 @@ import '../models/countdown_model.dart';
 /// All Hive operations are encapsulated here.
 class CountdownLocalDataSource {
   Box<CountdownModel>? _box;
-  final _streamController =
-      StreamController<List<CountdownModel>>.broadcast();
+  final _streamController = StreamController<List<CountdownModel>>.broadcast();
 
   /// Initialize the Hive box. Must be called before any other method.
   Future<void> init() async {

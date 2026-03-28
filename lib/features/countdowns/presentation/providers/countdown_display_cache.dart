@@ -46,8 +46,8 @@ class CountdownDisplayValues {
 
 /// Provider that caches display values for all countdowns.
 /// Recomputes when countdown data changes (via countdownsProvider dependency).
-final countdownDisplayCacheProvider =
-    StateNotifierProvider<CountdownDisplayCacheNotifier, Map<String, CountdownDisplayValues>>(
+final countdownDisplayCacheProvider = StateNotifierProvider<
+    CountdownDisplayCacheNotifier, Map<String, CountdownDisplayValues>>(
   (ref) {
     final notifier = CountdownDisplayCacheNotifier(ref);
     // Recompute whenever countdown state changes

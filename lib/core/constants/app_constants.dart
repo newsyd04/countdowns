@@ -14,8 +14,8 @@ class AppConstants {
 
   // Default notification offsets (minutes before event)
   static const List<int> defaultNotificationOffsets = [
-    0,       // At the time
-    1440,    // 1 day before
+    0, // At the time
+    1440, // 1 day before
   ];
 
   // Max items before we suggest archiving
@@ -31,7 +31,7 @@ class AppConstants {
     '\u{1F393}', // Graduation cap
     '\u{1F48D}', // Ring
     '\u{1F3C6}', // Trophy
-    '\u{2B50}',  // Star
+    '\u{2B50}', // Star
     '\u{1F381}', // Gift
     '\u{1F3B5}', // Music note
     '\u{2764}\u{FE0F}', // Heart
@@ -44,7 +44,7 @@ class AppConstants {
     '\u{1F451}', // Crown
     '\u{1F308}', // Rainbow
     '\u{1F525}', // Fire
-    '\u{26BD}',  // Soccer ball
+    '\u{26BD}', // Soccer ball
     '\u{1F3AE}', // Game controller
     '\u{1F4BC}', // Briefcase
     '\u{1F6E9}\u{FE0F}', // Small airplane

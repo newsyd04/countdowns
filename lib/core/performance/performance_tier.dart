@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 /// Device performance classification.
 ///
 /// Controls which visual effects are enabled to maintain 60fps
