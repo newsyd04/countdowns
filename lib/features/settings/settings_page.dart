@@ -93,6 +93,28 @@ class SettingsPage extends ConsumerWidget {
                   valueColor: secondaryColor,
                   onTap: () => _showThemePicker(context, ref),
                 ),
+                _buildSeparator(separatorColor),
+                _buildToggleRow(
+                  icon: CupertinoIcons.hand_draw,
+                  iconColor: AppColors.accent,
+                  label: 'Haptic Feedback',
+                  labelColor: labelColor,
+                  value: prefs.hapticsEnabled,
+                  onChanged: (v) {
+                    ref.read(preferencesProvider.notifier).setHapticsEnabled(v);
+                  },
+                ),
+                _buildSeparator(separatorColor),
+                _buildToggleRow(
+                  icon: CupertinoIcons.bell,
+                  iconColor: const Color(0xFFFF3B30),
+                  label: 'Notifications',
+                  labelColor: labelColor,
+                  value: prefs.notificationsEnabled,
+                  onChanged: (v) {
+                    ref.read(preferencesProvider.notifier).setNotificationsEnabled(v);
+                  },
+                ),
               ],
             ),
 
@@ -187,6 +209,46 @@ class SettingsPage extends ConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: children,
+      ),
+    );
+  }
+
+  // ─── Toggle Row (56pt target height) ──────────────────────
+
+  Widget _buildToggleRow({
+    required IconData icon,
+    required Color iconColor,
+    required String label,
+    required Color labelColor,
+    required bool value,
+    required ValueChanged<bool> onChanged,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: _rowHPadding,
+        vertical: _rowVPadding,
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: _iconSize, color: iconColor),
+          const SizedBox(width: _iconLabelGap),
+          Expanded(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontFamily: '.SF Pro Display',
+                fontSize: 17,
+                fontWeight: FontWeight.w400,
+                color: labelColor,
+              ),
+            ),
+          ),
+          CupertinoSwitch(
+            value: value,
+            activeTrackColor: const Color(0xFF34C759),
+            onChanged: onChanged,
+          ),
+        ],
       ),
     );
   }

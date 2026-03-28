@@ -6,6 +6,7 @@ import 'package:hive_ce_flutter/hive_flutter.dart';
 
 import 'core/constants/app_constants.dart';
 import 'core/theme/app_theme.dart';
+import 'core/utils/haptic_utils.dart';
 import 'features/countdowns/data/datasources/countdown_local_datasource.dart';
 import 'features/countdowns/presentation/pages/home_page.dart';
 import 'features/countdowns/presentation/providers/countdown_providers.dart';
@@ -64,6 +65,7 @@ class CountdownsApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final prefs = ref.watch(preferencesProvider);
+    AppHaptics.setEnabled(prefs.hapticsEnabled);
 
     final themeModeStr = prefs.themeMode;
     final themeMode = themeModeStr == 'light' ? ThemeMode.light
