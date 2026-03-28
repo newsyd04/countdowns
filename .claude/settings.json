@@ -6,10 +6,12 @@
       "Bash(mkdir:*)",
       "Bash(dart:*)",
       "Skill(permissions-analyzer)",
-      "Skill(permissions-analyzer:*)"
+      "Skill(permissions-analyzer:*)",
+      "Read(//Users/daranewsome/Downloads/**)"
     ],
     "additionalDirectories": [
-      "/Users/daranewsome/.claude"
+      "/Users/daranewsome/.claude",
+      "/Users/daranewsome/Downloads"
     ]
   }
 }
