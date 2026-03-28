@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   build-and-release:
-    name: Build & Release APK
+    name: Build & Release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,8 +26,11 @@ jobs:
       - run: flutter pub get
       - run: flutter test
       - run: flutter build apk --release
+      - run: flutter build appbundle --release
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: build/app/outputs/flutter-apk/app-release.apk
+          files: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab
           generate_release_notes: true
