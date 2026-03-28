@@ -180,7 +180,6 @@ class _PhysicsSwipeCardState extends State<PhysicsSwipeCard>
   @override
   Widget build(BuildContext context) {
     final offset = _controller.value;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     // Action reveal progress (0→1)
     final deleteProgress =

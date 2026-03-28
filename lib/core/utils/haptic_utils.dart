@@ -22,8 +22,10 @@ class AppHaptics {
 
   /// Check device capability once.
   static Future<bool> _canVibrate() async {
-    _hasVibrator ??= await Vibration.hasVibrator() ?? false;
-    return _hasVibrator!;
+    if (_hasVibrator == null) {
+      _hasVibrator = await Vibration.hasVibrator();
+    }
+    return _hasVibrator ?? false;
   }
 
   /// Light tap — selections, toggles, small interactions.

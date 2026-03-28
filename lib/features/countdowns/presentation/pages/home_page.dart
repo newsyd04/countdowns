@@ -13,7 +13,6 @@ import '../../domain/entities/countdown.dart';
 import '../../domain/usecases/countdown_usecases.dart';
 import '../providers/countdown_display_cache.dart';
 import '../providers/countdown_providers.dart';
-import '../providers/countdown_state.dart';
 import '../widgets/collapsing_nav_bar.dart';
 import '../widgets/countdown_card.dart';
 import '../widgets/empty_state_widget.dart';

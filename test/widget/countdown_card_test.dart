@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:countdowns/core/utils/date_utils.dart';
 import 'package:countdowns/features/countdowns/domain/entities/countdown.dart';
 import 'package:countdowns/features/countdowns/presentation/widgets/countdown_card.dart';
 
