@@ -25,6 +25,20 @@ jobs:
           cache: true
       - run: flutter pub get
       - run: flutter test
+
+      # Decode signing key from base64 secret
+      - name: Decode keystore
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/upload-keystore.jks
+
+      - name: Create key.properties
+        run: |
+          cat > android/key.properties << EOF
+          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          keyAlias=upload
+          storeFile=upload-keystore.jks
+          EOF
+
       - run: flutter build apk --release
       - run: flutter build appbundle --release
       - name: Create GitHub Release
