@@ -240,69 +240,28 @@ class _HomePageState extends ConsumerState<HomePage>
               count: sections.upcoming.length,
             ),
             const SizedBox(height: AppSpacing.md),
-            ReorderableListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              buildDefaultDragHandles: false,
-              proxyDecorator: (child, index, animation) {
-                return AnimatedBuilder(
-                  animation: animation,
-                  builder: (context, child) {
-                    final scale = Tween<double>(
-                      begin: 1.0,
-                      end: AppAnimations.dragLiftScale,
-                    ).animate(CurvedAnimation(
-                      parent: animation,
-                      curve: AppAnimations.defaultCurve,
-                    ));
-                    return Transform.scale(
-                      scale: scale.value,
-                      child: Material(
-                        elevation: 8 * caps.shadowMultiplier,
-                        borderRadius:
-                            BorderRadius.circular(AppSpacing.cardRadius),
-                        color: Colors.transparent,
-                        child: child,
-                      ),
-                    );
-                  },
-                  child: child,
-                );
-              },
-              onReorder: (oldIndex, newIndex) {
-                AppHaptics.medium();
-                ref
-                    .read(countdownsProvider.notifier)
-                    .reorder(oldIndex, newIndex);
-              },
-              itemCount: sections.upcoming.length,
-              itemBuilder: (context, index) {
-                final countdown = sections.upcoming[index];
-                final card = CountdownCard(
-                  countdown: countdown,
-                  displayValues: displayCache[countdown.id],
-                  onTap: () => _showEditSheet(countdown),
-                  onEdit: () => _showEditSheet(countdown),
-                  onDelete: () => _deleteCountdown(countdown),
-                );
-                return RepaintBoundary(
-                  key: ValueKey(countdown.id),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      bottom: AppSpacing.listItemSpacing,
-                    ),
-                    child: ReorderableDragStartListener(
-                      index: index,
-                      child: ParallaxCardWrapper(
-                        scrollController: _scrollController,
-                        shadowMultiplier: caps.shadowMultiplier,
-                        child: card,
-                      ),
-                    ),
+            ...sections.upcoming.map((countdown) {
+              final card = CountdownCard(
+                countdown: countdown,
+                displayValues: displayCache[countdown.id],
+                onTap: () => _showEditSheet(countdown),
+                onEdit: () => _showEditSheet(countdown),
+                onDelete: () => _deleteCountdown(countdown),
+              );
+              return RepaintBoundary(
+                key: ValueKey(countdown.id),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: AppSpacing.listItemSpacing,
                   ),
-                );
-              },
-            ),
+                  child: ParallaxCardWrapper(
+                    scrollController: _scrollController,
+                    shadowMultiplier: caps.shadowMultiplier,
+                    child: card,
+                  ),
+                ),
+              );
+            }),
           ],
 
           // ─── Past Section ─────────────────────────────────

@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/extensions/context_extensions.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
-import '../../core/utils/haptic_utils.dart';
 import 'settings_provider.dart';
 
 /// Apple-style Settings screen — pixel-precise implementation.
@@ -85,30 +84,14 @@ class SettingsPage extends ConsumerWidget {
             _buildGroup(
               surfaceColor: surfaceColor,
               children: [
-                _buildToggleRow(
-                  icon: CupertinoIcons.hand_draw,
+                _buildNavigationRow(
+                  icon: CupertinoIcons.moon_stars,
                   iconColor: AppColors.accent,
-                  label: 'Haptic Feedback',
+                  label: 'Appearance',
+                  value: _themeModeLabel(prefs.themeMode),
                   labelColor: labelColor,
-                  value: prefs.hapticsEnabled,
-                  onChanged: (v) {
-                    AppHaptics.selection();
-                    ref.read(preferencesProvider.notifier).setHapticsEnabled(v);
-                  },
-                ),
-                _buildSeparator(separatorColor),
-                _buildToggleRow(
-                  icon: CupertinoIcons.bell,
-                  iconColor: AppColors.destructive,
-                  label: 'Notifications',
-                  labelColor: labelColor,
-                  value: prefs.notificationsEnabled,
-                  onChanged: (v) {
-                    AppHaptics.selection();
-                    ref
-                        .read(preferencesProvider.notifier)
-                        .setNotificationsEnabled(v);
-                  },
+                  valueColor: secondaryColor,
+                  onTap: () => _showThemePicker(context, ref),
                 ),
               ],
             ),
@@ -208,46 +191,6 @@ class SettingsPage extends ConsumerWidget {
     );
   }
 
-  // ─── Toggle Row (56pt target height) ──────────────────────
-
-  Widget _buildToggleRow({
-    required IconData icon,
-    required Color iconColor,
-    required String label,
-    required Color labelColor,
-    required bool value,
-    required ValueChanged<bool> onChanged,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: _rowHPadding,
-        vertical: _rowVPadding,
-      ),
-      child: Row(
-        children: [
-          Icon(icon, size: _iconSize, color: iconColor),
-          const SizedBox(width: _iconLabelGap),
-          Expanded(
-            child: Text(
-              label,
-              style: TextStyle(
-                fontFamily: '.SF Pro Display',
-                fontSize: 17,
-                fontWeight: FontWeight.w400,
-                color: labelColor,
-              ),
-            ),
-          ),
-          CupertinoSwitch(
-            value: value,
-            activeTrackColor: const Color(0xFF34C759), // iOS system green
-            onChanged: onChanged,
-          ),
-        ],
-      ),
-    );
-  }
-
   // ─── Info Row (56pt target height) ────────────────────────
 
   Widget _buildInfoRow({
@@ -283,6 +226,107 @@ class SettingsPage extends ConsumerWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // ─── Navigation Row (56pt target height) ─────────────────
+
+  Widget _buildNavigationRow({
+    required IconData icon,
+    required Color iconColor,
+    required String label,
+    required String value,
+    required Color labelColor,
+    required Color valueColor,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: _rowHPadding,
+          vertical: _rowVPadding,
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: _iconSize, color: iconColor),
+            const SizedBox(width: _iconLabelGap),
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontFamily: '.SF Pro Display',
+                  fontSize: 17,
+                  fontWeight: FontWeight.w400,
+                  color: labelColor,
+                ),
+              ),
+            ),
+            Text(
+              value,
+              style: TextStyle(
+                fontFamily: '.SF Pro Display',
+                fontSize: 17,
+                fontWeight: FontWeight.w400,
+                color: valueColor,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(CupertinoIcons.chevron_right, size: 14, color: valueColor),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ─── Theme Mode Helpers ─────────────────────────────────
+
+  String _themeModeLabel(String mode) {
+    switch (mode) {
+      case 'light':
+        return 'Light';
+      case 'dark':
+        return 'Dark';
+      default:
+        return 'System';
+    }
+  }
+
+  void _showThemePicker(BuildContext context, WidgetRef ref) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (ctx) => CupertinoActionSheet(
+        title: const Text('Appearance'),
+        actions: [
+          CupertinoActionSheetAction(
+            onPressed: () {
+              ref.read(preferencesProvider.notifier).setThemeMode('system');
+              Navigator.pop(ctx);
+            },
+            child: const Text('System'),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () {
+              ref.read(preferencesProvider.notifier).setThemeMode('light');
+              Navigator.pop(ctx);
+            },
+            child: const Text('Light'),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () {
+              ref.read(preferencesProvider.notifier).setThemeMode('dark');
+              Navigator.pop(ctx);
+            },
+            child: const Text('Dark'),
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          isDefaultAction: true,
+          onPressed: () => Navigator.pop(ctx),
+          child: const Text('Cancel'),
+        ),
       ),
     );
   }

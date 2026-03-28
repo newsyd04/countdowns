@@ -6,7 +6,6 @@ import 'package:hive_ce_flutter/hive_flutter.dart';
 
 import 'core/constants/app_constants.dart';
 import 'core/theme/app_theme.dart';
-import 'core/utils/haptic_utils.dart';
 import 'features/countdowns/data/datasources/countdown_local_datasource.dart';
 import 'features/countdowns/presentation/pages/home_page.dart';
 import 'features/countdowns/presentation/providers/countdown_providers.dart';
@@ -58,22 +57,25 @@ Future<void> main() async {
 }
 
 /// Root application widget.
-/// Watches preferences to sync haptics enabled state globally.
+/// Watches preferences to apply theme mode.
 class CountdownsApp extends ConsumerWidget {
   const CountdownsApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Sync haptics preference to the static utility
     final prefs = ref.watch(preferencesProvider);
-    AppHaptics.setEnabled(prefs.hapticsEnabled);
+
+    final themeModeStr = prefs.themeMode;
+    final themeMode = themeModeStr == 'light' ? ThemeMode.light
+        : themeModeStr == 'dark' ? ThemeMode.dark
+        : ThemeMode.system;
 
     return MaterialApp(
       title: 'Countdowns',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.system,
+      themeMode: themeMode,
       scrollBehavior: const _AppleScrollBehavior(),
       home: const HomePage(),
     );

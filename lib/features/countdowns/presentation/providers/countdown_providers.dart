@@ -7,7 +7,6 @@ import '../../domain/repositories/countdown_repository.dart';
 import '../../domain/usecases/countdown_usecases.dart';
 import '../../../../core/utils/date_utils.dart';
 import '../../services/notification_service.dart';
-import '../../../settings/settings_provider.dart';
 import 'countdown_state.dart';
 
 // ─── Data Source & Repository ───────────────────────────────
@@ -56,7 +55,6 @@ final suggestDateUseCaseProvider = Provider<SuggestDateUseCase>((ref) {
 
 final countdownsProvider =
     StateNotifierProvider<CountdownsNotifier, CountdownsState>((ref) {
-  final prefs = ref.watch(preferencesProvider);
   return CountdownsNotifier(
     getCountdowns: ref.watch(getCountdownsUseCaseProvider),
     createCountdown: ref.watch(createCountdownUseCaseProvider),
@@ -64,7 +62,7 @@ final countdownsProvider =
     deleteCountdown: ref.watch(deleteCountdownUseCaseProvider),
     reorderCountdowns: ref.watch(reorderCountdownsUseCaseProvider),
     notificationService: NotificationService(),
-    globalNotificationsEnabled: prefs.notificationsEnabled,
+    globalNotificationsEnabled: true,
   );
 });
 

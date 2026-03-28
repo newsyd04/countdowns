@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 
-import '../../../../core/theme/app_animations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/utils/haptic_utils.dart';
@@ -21,9 +20,8 @@ import '../../../../core/utils/haptic_utils.dart';
 /// Snap behavior:
 /// - Small swipe → spring back to center
 /// - Medium swipe → settle into "action revealed" state
-/// - Strong/fast left swipe → triggers delete immediately
 ///
-/// Full swipe LEFT = auto-delete. Full swipe RIGHT = reveal only (no auto-trigger).
+/// User must tap the revealed action button to trigger edit/delete.
 class PhysicsSwipeCard extends StatefulWidget {
   final Widget child;
   final VoidCallback? onEdit;
@@ -57,7 +55,6 @@ class _PhysicsSwipeCardState extends State<PhysicsSwipeCard>
   // Thresholds
   static const double _deadzone = 8; // px before swipe activates
   static const double _snapThreshold = 0.4; // % of actionExtent to snap open
-  static const double _deleteVelocityThreshold = 800; // px/s for fast-delete
   static const double _elasticFactor = 0.3; // resistance beyond limits
 
   // Spring for snap-back and settle
@@ -120,15 +117,6 @@ class _PhysicsSwipeCardState extends State<PhysicsSwipeCard>
     final velocity = details.primaryVelocity ?? 0;
     final offset = _controller.value;
 
-    // ─── Fast left swipe → immediate delete ─────────────────
-    if (velocity < -_deleteVelocityThreshold && widget.onDelete != null) {
-      _animateToAndTrigger(-widget.actionExtent * 3, () {
-        AppHaptics.medium();
-        widget.onDelete?.call();
-      });
-      return;
-    }
-
     // ─── Determine snap target ──────────────────────────────
     double snapTarget = 0;
 
@@ -173,20 +161,6 @@ class _PhysicsSwipeCardState extends State<PhysicsSwipeCard>
         velocity / 1000, // convert px/s to reasonable velocity
       ),
     );
-  }
-
-  void _animateToAndTrigger(double target, VoidCallback action) {
-    _controller.animateWith(
-      SpringSimulation(_snapSpring, _controller.value, target, -2),
-    );
-    // Trigger action after a short delay for visual feedback
-    Future.delayed(const Duration(milliseconds: 150), () {
-      if (mounted) {
-        action();
-        // Reset position
-        _controller.value = 0;
-      }
-    });
   }
 
   void _handleActionTap(bool isDelete) {
