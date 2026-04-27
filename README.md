@@ -1,6 +1,6 @@
 # Countdowns
 
-A premium countdown app built with Flutter, designed to feel indistinguishable from a top-tier Apple-designed application. Track life's moments with style.
+A countdown app built with Flutter. Track life's moments with style.
 
 ## Screenshots
 
